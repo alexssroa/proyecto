@@ -1,19 +1,112 @@
+read.csv("https://raw.githubusercontent.com/alexssroa/proyecto/main/EfectividadEventosATR1.csv")
+efectividad <- read.csv("https://raw.githubusercontent.com/alexssroa/proyecto/main/EfectividadEventosATR1.csv")
+dim(efectividad)
+class(efectividad)
+library(ggplot2)
+install.packages("ggplot2")
+version
+install.packages("DescTools")
+
+# el objeto 'efectividad' es nuestra base de datos. Es una lista de nuestros eventos
+#con las columnas de tipo de evento, asistentes, campus, asistentes convertidos (en menos
+#de 30 días posterior al evento) y efectividad
+#La columna de efectividad ya está calculada y es los asistentes convertidos / asistentes
+efectividad
+
+
+
+#El primer valor imporante de que obtendremos es el promedio, la siguiente
+#función nos dice que en promedio el 8.53% de nuestros asistentes a eventos, se convierten
+#en menos de 30 días.
+summary(efectividad)
+
+
+
+sd(efectividad$Efectividad) #Calculamos la desviación estándar de la efectividad y vemos que
+#es de 11.58911. Este dato realmente no nos dice mucho si no lo comparamos con otro número.
+#Para ello, obtendremos al desviación estándar por campus
+#para ver qué tan estandarizados tiene cada campus sus eventos
+
+sdc <- aggregate(efectividad$Efectividad~efectividad$Campus, FUN=sd)
+sdc
+
+colnames(sdc) <- c("CampusDeOrigen","DesviacionDeEfectividad")
+sdc
+
+
+na.omit(sdc)
+sdc[rev(order(sdc$`efectividad$Efectividad`)),]
+desv.std.campus <- na.omit(sdc[rev(order(sdc$`DesviacionDeEfectividad`)),])
+desv.std.campus
+desv.std.campus5 <- head(desv.std.campus,5) #Top 5 campus con mayor desv. std
+desv.std.campus5
+
+#Haremos un gráfico de barras de estas desviaciones
+graficaBarras <- ggplot(data=desv.std.campus) + geom_point(aes(CampusDeOrigen,DesviacionDeEfectividad))
+graficaBarras
+
+graficaBarrasOrdenadas <- ggplot(data=desv.std.campus) + geom_point(aes(reorder(CampusDeOrigen,-DesviacionDeEfectividad),DesviacionDeEfectividad))
+graficaBarrasOrdenadas
+
+
+#De la siguiente gráfica podemos concluir que estos campus tienen la efectividad
+#de sus sesiones muy diferentes. Tienen mejores sesiones que otras, no están
+#estandarizadas. Tienen mayor potencial para detectar qué eventos son sus más
+#exitosos
+graficaBarrasOrdenadas5 <- ggplot(data=desv.std.campus5) + geom_point(aes(reorder(CampusDeOrigen,-DesviacionDeEfectividad),DesviacionDeEfectividad))
+graficaBarrasOrdenadas5
+
+
+#Observamos la efectividad por tipo de evento esta gráfica nos puede ayudar a
+#contestar la pregunta: ¿cuáles son nuestro eventos más importantes?
+ggplot(data=efectividad) + geom_point(aes(Tipo.de.Evento,Efectividad))
+efectividad
+
+#Una gráfica de cajas nos ayuda a visualizar en dónde se ubican las medianas
+#,la magnitud los rangos intercuartilicos, y en dónde caen la mayoría de los
+#datos ej, el 50% de los datos está dentro de la caja
+boxplot <- ggplot(data=efectividad) + geom_boxplot(aes(Tipo.de.Evento,Efectividad))
+boxplot
+
+
+#Antes de aplicar una prueba de hipótesis para ver si realmente son
+#significativamente diferentes las medias, ordenaremos el evento más efectivo
+#al menos efectivo
+#Aparentemente Vivencia Tec con 18.5% de efectividad sí es significativamente
+#diferente que los demás eventos.
+meanEfectividad <- aggregate(efectividad$Efectividad~efectividad$Tipo.de.Evento, FUN=mean)
+meanEfectividad
+mediasDeEvento <- meanEfectividad[rev(order(meanEfectividad$`efectividad$Efectividad`)),]
+
+#Aplicaremos una prueba de hipótesis para ver con qué tanta seguridad podremos afirmar esto
+#H0: Las medias son iguales
+#H1: Las medias son diferentes
+
+#Media de VivenciaTec:
+mediasDeEvento
+m1 <- mediasDeEvento$`efectividad$Efectividad`[[1]]
+m1 #Media de VivenciaTec
+
+#Media de Sesion Informativa:
+m2 <- mediasDeEvento$`efectividad$Efectividad`[[2]]
+m2 #Media de Sesion Informativa
+
+#Calculo de varianzas
+varEfectividad <- aggregate(efectividad$Efectividad~efectividad$Tipo.de.Evento, FUN=var)
+varEfectividad
+
+#Varianza de VivenciaTec
+var1 <- varEfectividad$`efectividad$Efectividad`[[10]]
+var1 #Varianza de VivenciaTec
+
+#Varianza de Sesion Informativa
 var2 <- varEfectividad$`efectividad$Efectividad`[[6]]
 var2 #Varianza de Sesion Informativa
 
 #Calculo de ns
 nEfectividad <- aggregate(efectividad$Efectividad~efectividad$Tipo.de.Evento, FUN=length)
 nEfectividad
-?typeog
-?array
-?percentile
 
-?dbListTables
-?enlistAll
-?listData
-?quantile
-
-?dbLo
 #Varianza de VivenciaTec
 n1 <- nEfectividad$`efectividad$Efectividad`[[10]]
 n1 #Varianza de VivenciaTec
