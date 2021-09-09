@@ -1,0 +1,93 @@
+var2 <- varEfectividad$`efectividad$Efectividad`[[6]]
+var2 #Varianza de Sesion Informativa
+
+#Calculo de ns
+nEfectividad <- aggregate(efectividad$Efectividad~efectividad$Tipo.de.Evento, FUN=length)
+nEfectividad
+?typeog
+?array
+?percentile
+
+?dbListTables
+?enlistAll
+?listData
+?quantile
+
+?dbLo
+#Varianza de VivenciaTec
+n1 <- nEfectividad$`efectividad$Efectividad`[[10]]
+n1 #Varianza de VivenciaTec
+
+#Varianza de Sesion Informativa
+n2 <- nEfectividad$`efectividad$Efectividad`[[6]]
+n2 #Varianza de Sesion Informativa
+
+t <- (m1-m2)/(sqrt(((n1-1)*var1+(n2-1)*var2)/(n1+n2-2))*sqrt(1/n1+1/n2))
+t
+gl <- n1+n2-2
+gl
+
+pvalue <- pt (t,df = gl,lower.tail = FALSE)
+pvalue
+
+if (pvalue < 0.05) {
+  'rechazamos hipotesis nula'
+} else {
+  'no rechazamos hipotesis nula'
+}
+
+
+
+#Comparando la primera media con la última:
+
+
+
+
+
+#Media de VivenciaTec:
+mediasDeEvento
+m11 <- mediasDeEvento$`efectividad$Efectividad`[[1]]
+m11 #Media de VivenciaTec
+
+#Media de Sesion Informativa:
+m22 <- mediasDeEvento$`efectividad$Efectividad`[[10]]
+m22 #Media de Sesion Informativa
+
+#Calculo de varianzas
+varEfectividad <- aggregate(efectividad$Efectividad~efectividad$Tipo.de.Evento, FUN=var)
+varEfectividad
+
+#Varianza de VivenciaTec
+var11 <- varEfectividad$`efectividad$Efectividad`[[10]]
+var11 #Varianza de VivenciaTec
+
+#Varianza de Sesion Informativa
+var22 <- varEfectividad$`efectividad$Efectividad`[[2]]
+var22 #Varianza de Sesion Informativa
+
+#Calculo de ns
+nEfectividad <- aggregate(efectividad$Efectividad~efectividad$Tipo.de.Evento, FUN=length)
+nEfectividad
+
+#Varianza de VivenciaTec
+n11 <- nEfectividad$`efectividad$Efectividad`[[10]]
+n11 #Varianza de VivenciaTec
+
+#Varianza de Sesion Informativa
+n22 <- nEfectividad$`efectividad$Efectividad`[[2]]
+n22 #Varianza de Sesion Informativa
+
+t1 <- (m11-m22)/(sqrt(((n11-1)*var11+(n22-1)*var22)/(n11+n22-2))*sqrt(1/n11+1/n22))
+t1
+gl1 <- n11+n22-2
+gl1
+
+pvalue1 <- pt (t1,df = gl1,lower.tail = FALSE)
+pvalue1
+
+if (pvalue1 < 0.05) {
+  'rechazamos hipotesis nula'
+} else {
+  'no rechazamos hipotesis nula'
+}
+
